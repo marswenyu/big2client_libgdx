@@ -51,7 +51,7 @@ public class Deck {
             }
 
             if(card.mPokeSuitRank == PokerStyle.Club.getRank() && card.mPokerRank == 3){
-                players[playCount].setFirstPlayCard();  //拿到梅花三
+                NewGameManager.GlobalPlayerTurn = playCount; //拿到梅花三
             }
 
             players[playCount].playerCards.add(card);

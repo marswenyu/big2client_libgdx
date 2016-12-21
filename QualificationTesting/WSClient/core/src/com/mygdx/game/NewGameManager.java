@@ -12,6 +12,7 @@ public class NewGameManager {
     private List<Card> m_table_cards = new LinkedList<Card>();  //產生UI用的List
     private Player[] mAllPlayer;    //每個玩家以及手上的牌
     private boolean mIsGameFinish;
+    public static int GlobalPlayerTurn;
     Deck mDeck;
 
     Player[] players = {
@@ -22,6 +23,7 @@ public class NewGameManager {
     };
 
     public void generate(){
+        GlobalPlayerTurn = -1;
         mIsGameFinish = false;
         mDeck = new Deck();
         mDeck.createAllCardsAndShuffle();
@@ -47,18 +49,4 @@ public class NewGameManager {
 
     }
 
-    public void play(){
-        for(Player player:mAllPlayer){
-            if(player.playerCards.size() == 0){
-                return; //有玩家出完牌,牌局結束
-            }
-        }
-
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                    play();
-            }
-        }, 2000);
-    }
 }

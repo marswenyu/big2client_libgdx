@@ -16,12 +16,4 @@ public class Player {
         isFirstPlayCard = false;
     }
 
-    public void setFirstPlayCard(){
-        isFirstPlayCard = true;
-    }
-
-    public boolean getFirstPlayCard(){
-        return isFirstPlayCard;
-    }
-
 }
