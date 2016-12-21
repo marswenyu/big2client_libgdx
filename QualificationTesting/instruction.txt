@@ -1,0 +1,69 @@
+目標 : 實做一個簡易 client-server 架構的大老二遊戲
+
+工具:
+coding language :Java
+client game engine: libgdx
+                    https://github.com/libgdx/libgdx/wiki
+
+
+
+附件內包含兩個專案
+WSServer : 一個已經有 websocket listener 的 project, 內包含 websocket server 與 websocket client, 
+	   可執行檔位於 Qualification testing\WSServer\out\artifacts\WSServer_jar
+
+WSClient : 一個已經是由 libgdx 建立好的專案, 內含基本影像顯示 (render), 設定 sprite position, 
+	   並包含基本所需的撲克牌素材,
+	   Desktop版執行檔位於 Qualification testing\WSClient\desktop\build\libs
+
+
+條件:
+1.使用 WSServer 專案內含的 websocket client 實作應用在 WSClient project, 達到  client server 連線溝通目的
+2.自定義協定達到 client-server 訊息溝通
+3.實作大老二遊戲邏輯於server 上, 並負責邏輯運算即時將牌局資訊傳送至 client 上演示
+4.client 上操作行為(選牌, 確定)不一定需要, 也可自動打牌.
+
+
+合格種類:
+1.完美合格, 完成上述需求, 並豐富UI介面與音效, 有 android 或 ios 版本
+2.優良合格, 完成上述需求 , 有desktop 版本外, 有 android 或 ios 版本
+3.標準合格, 完成上述需求, 有 desktop 版本
+4.次佳合格, 使用其他遊戲引擎或單純 command line 介面 與 WSServer串接, 完成上述需求
+5.基本合格, 完成單機版本, 且符合上述需求
+
+==================================================================================================================
+
+goal : implement a simple game called "Big Two" base on client-server archetecture.
+
+tool:
+
+coding language :Java
+client game engine: libgdx
+                    https://github.com/libgdx/libgdx/wiki
+
+
+there are two projects attached
+WSServer : a project implement a game server, including websocket listener, and contains websocket server, websocket client,
+	   executable file will be place at path: Qualification testing\WSServer\out\artifacts\WSServer_jar
+
+WSClient : a porject base on libgdx game engine, include textrure render, sprite setting features, 
+	   there are some base art resources attached.
+
+requirements:
+1. use the websocket client library which in WSServer project, apply on project WSClient, for archive client-server commucation.
+2. define game protocols for message exchange.
+3. implement "Big Two" game logic on server side, which in charge of data computing and transmit to client for render purpose.
+4. the UI control in not required, may run a game automatically.
+
+           
+Qualification:
+1.perfect qualification: achieved the above requeirements, and contains other ui feature and sounds, mobile version added.
+2.good qualification: achieved the above requeirements, mobile version added.
+3.standard qualification: achieved the above requeirements, desktop version contained.
+4.base qualification : finished the architecture of client-server, achieved the above requeirements in anyway.
+5.minimum qualification: achieved the above requeirements without client-server architecture.
+
+
+
+
+Matt.     2016/ 12/ 20
+twhot823@gmail.com.tw
