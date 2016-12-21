@@ -51,7 +51,8 @@ public class Deck {
             }
 
             if(card.mPokeSuitRank == PokerStyle.Club.getRank() && card.mPokerRank == 3){
-                NewGameManager.GlobalPlayerTurn = playCount; //拿到梅花三
+                NewGameManager.GlobalPlayerTurn = playCount; //拿到梅花三,由此玩家先出牌
+                players[playCount].setIsContainClueThree();  //此玩家有梅花三
             }
 
             players[playCount].playerCards.add(card);

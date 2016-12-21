@@ -10,9 +10,12 @@ import java.util.List;
 public class NewGameManager {
 
     private List<Card> m_table_cards = new LinkedList<Card>();  //產生UI用的List
-    private Player[] mAllPlayer;    //每個玩家以及手上的牌
+    private Player[] mHandPlayer;    //每個玩家手上的牌
+    private Player[] mPoolPlayer;    //每個玩家出的牌
     private boolean mIsGameFinish;
-    public static int GlobalPlayerTurn;
+    public static int GlobalPlayerTurn; //該誰出牌
+    public static long GlobalPlayInterval = 2000L;
+    public long tmpCurrent;
     Deck mDeck;
 
     Player[] players = {
@@ -24,17 +27,37 @@ public class NewGameManager {
 
     public void generate(){
         GlobalPlayerTurn = -1;
+        tmpCurrent = 0L;
         mIsGameFinish = false;
         mDeck = new Deck();
         mDeck.createAllCardsAndShuffle();
-        mAllPlayer = mDeck.deal(players);
+        mHandPlayer = mDeck.deal(players);
     }
 
     public void render(SpriteBatch batch){
+        long nowTime = System.currentTimeMillis();
+        if(nowTime - tmpCurrent >= GlobalPlayInterval){
+            // TODO: 觸發玩家出牌
+            for(Player player:mHandPlayer){
+                if(player.playerCards.size() > 0) {
+                    player.playerCards.remove(0);
+                }
+            }
+            tmpCurrent = nowTime;
+        }
+
         m_table_cards.clear();
-        for(Player player:mAllPlayer){
+        for(Player player:mHandPlayer){
             for(Card card:player.playerCards){
                 m_table_cards.add(card);
+            }
+        }
+
+        if(mPoolPlayer != null) {
+            for (Player player : mPoolPlayer) {
+                for (Card card : player.playerCards) {
+                    m_table_cards.add(card);
+                }
             }
         }
 
