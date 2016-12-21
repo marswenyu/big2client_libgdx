@@ -10,27 +10,6 @@ import java.util.*;
  * Created by matt1201 on 2016/12/20.
  */
 public class GameManager {
-    class Card{
-        public String Name;
-        public float X;
-        public float Y;
-        public float Width;
-        public float Height;
-        public float Rotation;
-        public Sprite Image;
-
-        public Card(String name, float x, float y, float width, float height, float rotation, Sprite img){
-            Name = name;
-            X = x;
-            Y = y;
-            Width = width;
-            Height = height;
-            Rotation = rotation;
-            Image = img;
-        }
-    }
-
-    private Map<String, Texture> m_cards = new HashMap<String, Texture>();
 
     private List<Card> m_table_cards = new LinkedList<Card>();
 
@@ -46,25 +25,25 @@ public class GameManager {
 
             switch (style){
                 case Spade:
-                    x =350;
-                    y =200;
+                    x =300;
+                    y =550;
                     delta_y = 25;
                     roation = 90;
                     break;
                 case Heart:
                     x =350;
-                    y =600;
+                    y =1020;
                     delta_x = 25;
                     break;
                 case Diamond:
-                    x =980;
-                    y =200;
+                    x =1030;
+                    y =550;
                     delta_y = 25;
                     roation = 90;
                     break;
                 case Club:
                     x =350;
-                    y =10;
+                    y =310;
                     delta_x = 25;
                     break;
             }
@@ -76,7 +55,6 @@ public class GameManager {
                 Texture img = new Texture("poker/" + asset_name);
                 Sprite sprite = new Sprite(img);
 
-                m_cards.put(name, img);
                 m_table_cards.add(new Card(name, x, y, 130, 200, roation, sprite));
                 x+=delta_x;
                 y+=delta_y;
