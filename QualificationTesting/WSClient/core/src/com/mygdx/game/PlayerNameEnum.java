@@ -24,4 +24,16 @@ public enum PlayerNameEnum {
         return index;
     }
 
+    public static PlayerNameEnum getPlayerEnum(int playerCode){
+        if(playerCode == 0){
+            return Jhon;
+        }else if(playerCode == 1){
+            return Mary;
+        }else if(playerCode == 2){
+            return Tom;
+        }else {
+            return Joe;
+        }
+    }
+
 }

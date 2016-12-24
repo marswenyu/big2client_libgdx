@@ -9,7 +9,8 @@ import java.util.List;
 
 public class NewGameManager {
 
-    private List<Card> m_table_cards = new LinkedList<Card>();  //產生UI用的List
+    private LinkedList<OneCard> m_table_cards = new LinkedList<OneCard>();  //產生UI用的List
+    private LinkedList<PositionAndImg.PositionDetail> drawCardList = new LinkedList<PositionAndImg.PositionDetail>();  //產生UI用的List
     private Player[] mHandPlayer;    //每個玩家手上的牌
     private Player[] mPoolPlayer;    //每個玩家出的牌
     private boolean mIsGameFinish;
@@ -17,6 +18,10 @@ public class NewGameManager {
     public static long GlobalPlayInterval = 2000L;
     public long tmpCurrent;
     Deck mDeck;
+    private int mPlayTurn = -1;
+    private boolean mReadyToPlay;
+
+    private LinkedList<OneCard> mWithCard = new LinkedList<OneCard>();  //玩家出的牌
 
     Player[] players = {
             new Player(PlayerNameEnum.Jhon),
@@ -30,44 +35,84 @@ public class NewGameManager {
         tmpCurrent = 0L;
         mIsGameFinish = false;
         mDeck = new Deck();
-        mDeck.createAllCardsAndShuffle();
         mHandPlayer = mDeck.deal(players);
+        mReadyToPlay = true;
+
     }
 
     public void render(SpriteBatch batch){
         long nowTime = System.currentTimeMillis();
-        if(nowTime - tmpCurrent >= GlobalPlayInterval){
+        if((nowTime - tmpCurrent >= GlobalPlayInterval) && !mIsGameFinish && !mReadyToPlay){
             // TODO: 觸發玩家出牌
-            for(Player player:mHandPlayer){
-                if(player.playerCards.size() > 0) {
-                    player.playerCards.remove(0);
+
+            LinkedList<OneCard> tmpWithCard = null;
+            mWithCard.clear();
+
+            int passCount = 0; //若出現三個Pass,代表
+
+            //第一個人先出牌
+            for(int i=0;i<mHandPlayer.length;i++){
+                if(players[i].getIsYourTurn()){
+                    mPlayTurn = i;
+                    tmpWithCard = mHandPlayer[i].caculateHowToPlay(mHandPlayer[i].playerOneCards, null);
+                    mWithCard = (LinkedList<OneCard>) tmpWithCard.clone();
                 }
             }
+
+            //第二個人開始出牌
+            while (true && !mWithCard.isEmpty()){
+
+                for(int i=mPlayTurn;i<mHandPlayer.length;i++){
+
+                    if(!mHandPlayer[i].getPass()){
+                        tmpWithCard = mHandPlayer[i].caculateHowToPlay(mHandPlayer[i].playerOneCards, mWithCard);
+
+                        if(tmpWithCard != null){
+                            mWithCard = (LinkedList<OneCard>) tmpWithCard.clone();
+                        }else{
+                            mHandPlayer[i].setPass();
+                            passCount++;
+                        }
+                    }
+
+                    if(mPlayTurn == 3){
+                        mPlayTurn =0;
+                    }else {
+                        mPlayTurn++;
+                    }
+                }
+
+                if(passCount == 3) {
+                    break;
+                }
+            }
+
+            for(Player player:mHandPlayer){
+                if(player.playerOneCards.size() == 0) {
+                    mIsGameFinish = true;
+                }
+
+                player.resetPass();
+                player.resetYourTurn();
+            }
+            mWithCard.clear();
+            mHandPlayer[mPlayTurn].setYourTurn();
             tmpCurrent = nowTime;
         }
 
-        m_table_cards.clear();
-        for(Player player:mHandPlayer){
-            for(Card card:player.playerCards){
-                m_table_cards.add(card);
-            }
-        }
+        drawCardList = new PositionAndImg().createPosition(mHandPlayer);
+        Player winner = new Player(PlayerNameEnum.getPlayerEnum(mPlayTurn));
+        winner.playerOneCards = (LinkedList<OneCard>) mWithCard.clone();
+        LinkedList<PositionAndImg.PositionDetail> toPlay = new PositionAndImg().createFirePosition(winner);
+        drawCardList.addAll(toPlay);
 
-        if(mPoolPlayer != null) {
-            for (Player player : mPoolPlayer) {
-                for (Card card : player.playerCards) {
-                    m_table_cards.add(card);
-                }
-            }
-        }
-
-        for(int i=0; i<m_table_cards.size(); i++){
-            batch.draw(m_table_cards.get(i).Image,
-                    m_table_cards.get(i).X, m_table_cards.get(i).Y,
+        for(int i=0; i<drawCardList.size(); i++){
+            batch.draw(drawCardList.get(i).Image,
+                    drawCardList.get(i).X, drawCardList.get(i).Y,
                     0, 0,
-                    m_table_cards.get(i).Width, m_table_cards.get(i).Height,
+                    drawCardList.get(i).Width, drawCardList.get(i).Height,
                     1, 1,
-                    m_table_cards.get(i).Rotation);
+                    drawCardList.get(i).Rotation);
         }
 
     }
