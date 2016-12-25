@@ -22,7 +22,7 @@ public class Player {
     }
 
     public boolean getIsYourTurn(){
-        if(isContainClueThree(playerOneCards)){
+        if(isContainClubsThree(playerOneCards)){
             isYourTurn = true;
         }
 
@@ -143,9 +143,9 @@ public class Player {
                 toReturn.add(tmpCard.get(0));
                 return toReturn;
             }
-        }else if(isContainClueThree(hand)){
+        }else if(isContainClubsThree(hand)){
             for (OneCard oneCard : hand) {
-                if(isClueThree(oneCard)){
+                if(isClubsThree(oneCard)){
                     toReturn.add(oneCard);
                     return toReturn;
                 }
@@ -379,10 +379,10 @@ public class Player {
         }
     };
 
-    public boolean isContainClueThree(List<OneCard> hand){
+    public boolean isContainClubsThree(List<OneCard> hand){
 
         for(OneCard card:hand){
-            if(isClueThree(card)){
+            if(isClubsThree(card)){
                 return true;
             }
         }
@@ -390,7 +390,7 @@ public class Player {
         return false;
     }
 
-    public boolean isClueThree(OneCard card){
+    public boolean isClubsThree(OneCard card){
 
         if(card.getValue() == 3 && card.getSuit() == OneCard.Suit.CLUBS){
             return true;
