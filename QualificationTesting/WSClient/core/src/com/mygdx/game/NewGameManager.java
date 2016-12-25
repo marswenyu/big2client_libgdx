@@ -216,11 +216,12 @@ public class NewGameManager {
                 if(player.playerToReturn != null) {
                     player.playerToReturn.clear();
                 }
-
-                if(mWithCard != null) {
-                    mWithCard = null;
-                }
             }
+
+            if(mWithCard != null) {
+                mWithCard = null;
+            }
+
             return true;
         }
 

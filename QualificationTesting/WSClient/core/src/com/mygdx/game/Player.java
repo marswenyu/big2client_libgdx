@@ -54,19 +54,21 @@ public class Player {
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
 
         if(withCard !=null){
-            if(withCard.size() == 5){
-//                toReturn = createFullHouse(hand, withCard);
-//
-//                if(toReturn.isEmpty()){
-//
-//                }
-            }else if(withCard.size() ==2){
-
-            }else if(withCard.size() ==1){
+            if(getStreamHead(withCard) != null){
+                toReturn = createStreamWith(hand, withCard);
+            }else if(isPairs(withCard)){
+                toReturn = createPairs(hand, withCard);
+            }else {
                 toReturn = createOneCard(hand, withCard);
             }
         }else {
-            toReturn = createOneCard(hand, null);
+            toReturn = createStreamWith(hand, null);
+            if(toReturn == null) {
+                toReturn = createPairs(hand, null);
+            }
+            if(toReturn == null) {
+                toReturn = createOneCard(hand, null);
+            }
         }
 
         return toReturn;
@@ -81,9 +83,10 @@ public class Player {
             if (withCard.size()<5){
                 return null;
             }
-            OneCard headOfStream = null;
-            Collections.sort(withCard, NumberAndSuit);
-            headOfStream = withCard.get(0);
+            OneCard headOfStream = getStreamHead(withCard);
+            if(headOfStream == null){
+                return null;
+            }
 
             for(int i=0;i<hand.size();i++){
                 toReturn.clear();
@@ -102,7 +105,9 @@ public class Player {
                     }
                 }
             }
-        }else{
+        }else if(isContainClubsThree(hand)){
+
+        }else {
             for(int i=0;i<hand.size();i++){
                 toReturn.clear();
                 toReturn.add(hand.get(i));
@@ -188,13 +193,35 @@ public class Player {
                     }
                 }
             }
-        }else{
+        }else if(isContainClubsThree(hand)){
+
+            Log.log("isContainClubsThree");
+            for(int i=0;i<hand.size();i++){
+                if(!isClubsThree(hand.get(i)) && hand.get(i).getValue()==3){
+
+                    Log.log("another 3:"+hand.get(i).getSuit().getRawName());
+
+                    toReturn.add(hand.get(i));
+                    for(int j=0;j<hand.size();j++){
+
+                        Log.log("round:"+j + " size:"+hand.size());
+                        if(isClubsThree(hand.get(j))){
+
+                            Log.log("get Clubs 3:"+j);
+
+                            toReturn.add(hand.get(j));
+                            return toReturn;
+                        }
+                    }
+                }
+            }
+        }else {
             //withCard==null
             for(int i=0;i<hand.size();i++){
                 toReturn.clear();
                 toReturn.add(hand.get(i));
 
-                for(int j=i+1;i<hand.size();i++){
+                for(int j=i+1;j<hand.size();j++){
                     if(toReturn.get(0).getValue() == hand.get(j).getValue()){
                         toReturn.add(hand.get(j));
                         return toReturn;
@@ -264,7 +291,9 @@ public class Player {
                     return toReturn;
                 }
             }
-        }else{
+        }else if(isContainClubsThree(hand)){
+
+        }else {
             //withCard ==null
             for(int i=0;i<hand.size();i++){
                 toReturn.clear();
@@ -311,6 +340,8 @@ public class Player {
             int check1 = withCard.get(0).getValue() + withCard.get(4).getValue();
             int check2 = withCard.get(1).getValue() + withCard.get(3).getValue();
             int check3 = withCard.get(2).getValue();
+
+            Log.log("check1:"+check1+" check2:"+check2+" check3:"+check3);
 
             if(check1 == check2 && check1==2*check3){
                 return withCard.get(0);
@@ -367,14 +398,14 @@ public class Player {
         return null;
     }
 
-    //數字：小>大,花色：黑桃>梅花
+    //數字：小>大,花色：梅花>黑桃
     public static Comparator<OneCard> NumberAndSuit = new Comparator<OneCard>(){
         public int compare(OneCard s1, OneCard s2) {
 
             if(s1.getValue() != s2.getValue()){
                 return s1.getValue() - s2.getValue();
             }else {
-                return s2.getSuit().getRawValue() - s1.getSuit().getRawValue();
+                return s1.getSuit().getRawValue() - s2.getSuit().getRawValue();
             }
         }
     };
@@ -397,4 +428,5 @@ public class Player {
         }
         return false;
     }
+
 }
