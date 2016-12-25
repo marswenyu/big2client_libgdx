@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Collections;
@@ -97,47 +98,58 @@ public class PositionAndImg {
         }
     };
 
-    public LinkedList<PositionDetail> createFirePosition(Player playerFireCard){
+    public LinkedList<PositionDetail> createFirePosition(Player[] playerFireCard){
         LinkedList<PositionDetail> displayCardUI = new LinkedList<PositionDetail>();
 
-        float x =0;
-        float y =0;
-        float delta_x = 0;
-        float delta_y = 0;
-        float roation = 0;
+        for(Player player:playerFireCard) {
 
-        switch (playerFireCard.mPlayerNameEnum){
-            case Jhon://左
-                x =550;
-                y =400;
-                delta_y = 25;
-                roation = 90;
-                break;
-            case Mary://上
-                x =650;
-                y =600;
-                delta_x = 25;
-                break;
-            case Tom://右
-                x =1350;
-                y =400;
-                delta_y = 25;
-                roation = 90;
-                break;
-            case Joe://下
-                x =650;
-                y =370;
-                delta_x = 25;
-                break;
-            default:
-                break;
-        }
+            float x =0;
+            float y =0;
+            float delta_x = 0;
+            float delta_y = 0;
+            float roation = 0;
 
-        for(int i=0; i<playerFireCard.playerOneCards.size(); i++){
-            Sprite sprite = playerFireCard.playerOneCards.get(i).getImage();
-            displayCardUI.add(new PositionDetail(x, y, 130, 200, roation, sprite));
-            x+=delta_x;
-            y+=delta_y;
+            if(player.playerToReturn != null) {
+                Collections.sort(player.playerToReturn, SuitAndNumber);
+            }
+
+            switch (player.mPlayerNameEnum) {
+                case Jhon://左
+                    x = 550;
+                    y = 400;
+                    delta_y = 25;
+                    roation = 90;
+                    break;
+                case Mary://上
+                    x = 650;
+                    y = 600;
+                    delta_x = 25;
+                    break;
+                case Tom://右
+                    x = 1350;
+                    y = 400;
+                    delta_y = 25;
+                    roation = 90;
+                    break;
+                case Joe://下
+                    x = 650;
+                    y = 370;
+                    delta_x = 25;
+                    break;
+                default:
+                    break;
+            }
+
+            if(player.playerToReturn != null) {
+                for (int i = 0; i < player.playerToReturn.size(); i++) {
+                    Sprite sprite = player.playerToReturn.get(i).getImage();
+                    displayCardUI.add(new PositionDetail(x, y, 130, 200, roation, sprite));
+                    x += delta_x;
+                    y += delta_y;
+                }
+            }else if(player.getPass()){
+                displayCardUI.add(new PositionDetail(x, y, 130, 200, roation, NewGameManager.passImage));
+            }
         }
 
         return  displayCardUI;

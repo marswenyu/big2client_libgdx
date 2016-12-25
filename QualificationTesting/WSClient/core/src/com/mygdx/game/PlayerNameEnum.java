@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 public enum PlayerNameEnum {
-    Jhon("Jhon", 0), Mary("Mary", 1), Tom("Tom", 2), Joe("Joe", 3);
+    Jhon("Player0", 0), Mary("Player1", 1), Tom("Player2", 2), Joe("Player3", 3);
 
     private String name;
     private int index;

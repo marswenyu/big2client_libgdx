@@ -66,12 +66,16 @@ public class OneCard {
         return image;
     }
 
+    public String getOneCardName(){
+        return oneCardName;
+    }
+
     public enum Suit {
 
         SPADES("spades",4),
         HEARTS("heart",3),
-        DIAMONDS("clubs",2),
-        CLUBS("diamonds",1);
+        DIAMONDS("diamonds",2),
+        CLUBS("clubs",1);
 
         static final int EACH_MAX_NUM = 13;
         String m_name;

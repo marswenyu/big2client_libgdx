@@ -10,13 +10,15 @@ import java.util.Random;
 public class Player {
     public PlayerNameEnum mPlayerNameEnum;
     public LinkedList<OneCard> playerOneCards = new LinkedList<OneCard>();
+    public LinkedList<OneCard> playerToReturn = new LinkedList<OneCard>();
     private boolean isYourTurn;
     private boolean isPass;
 
     public Player(PlayerNameEnum playerNameEnum) {
         super();
         mPlayerNameEnum = playerNameEnum;
-        isYourTurn = false;
+        resetYourTurn();
+        resetPass();
     }
 
     public boolean getIsYourTurn(){
@@ -140,6 +142,13 @@ public class Player {
                 Collections.shuffle(tmpCard);
                 toReturn.add(tmpCard.get(0));
                 return toReturn;
+            }
+        }else if(isContainClueThree(hand)){
+            for (OneCard oneCard : hand) {
+                if(isClueThree(oneCard)){
+                    toReturn.add(oneCard);
+                    return toReturn;
+                }
             }
         }else {
             Random rand = new Random();
@@ -373,11 +382,19 @@ public class Player {
     public boolean isContainClueThree(List<OneCard> hand){
 
         for(OneCard card:hand){
-            if(card.getValue() == 3 && card.getSuit() == OneCard.Suit.CLUBS){
+            if(isClueThree(card)){
                 return true;
             }
         }
 
+        return false;
+    }
+
+    public boolean isClueThree(OneCard card){
+
+        if(card.getValue() == 3 && card.getSuit() == OneCard.Suit.CLUBS){
+            return true;
+        }
         return false;
     }
 }

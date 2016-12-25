@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MyGdxGame extends ApplicationAdapter {
-	public static String TAG = "MyGdxGame_";
+
 	SpriteBatch batch;
 //	GameManager gameManager = new GameManager();
 	NewGameManager gameManager = new NewGameManager();
