@@ -87,7 +87,7 @@ public class OneCard {
         }
 
         public boolean isHigher(Suit suit) {
-            return suit.m_value < m_value;
+            return m_value > suit.m_value;
         }
 
         public String getRawName(){

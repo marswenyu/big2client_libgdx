@@ -169,9 +169,8 @@ public class NewGameManager {
                         Log.log(players[i].mPlayerNameEnum.getName()+" > pass");
                         players[i].setPass();
                     }else {
-                        Log.printCard(players[i].playerToReturn);
                         boolean isRemove = players[i].playerOneCards.removeAll(players[i].playerToReturn);
-//                    log("isRemove:"+isRemove);
+
                         Log.printCard(players[i].playerToReturn);
 
                         mWithCard = players[i].playerToReturn;
