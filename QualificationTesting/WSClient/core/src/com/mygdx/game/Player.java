@@ -52,20 +52,23 @@ public class Player {
 
     public LinkedList<OneCard> caculateHowToPlay(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
+        Collections.sort(hand, NumberAndSuit);
 
         if(withCard !=null){
-            if(getStreamHead(withCard) != null){
-                toReturn = createStreamWith(hand, withCard);
-            }else if(isPairs(withCard)){
+            Collections.sort(withCard, NumberAndSuit);
+//            if(getStreamHead(withCard) != null){
+//                toReturn = createStreamWith(hand, withCard);
+//            }else
+            if(isPairs(withCard)){
                 toReturn = createPairs(hand, withCard);
             }else {
                 toReturn = createOneCard(hand, withCard);
             }
         }else {
-            toReturn = createStreamWith(hand, null);
-            if(toReturn == null) {
+//            toReturn = createStreamWith(hand, null);
+//            if(toReturn == null) {
                 toReturn = createPairs(hand, null);
-            }
+//            }
             if(toReturn == null) {
                 toReturn = createOneCard(hand, null);
             }
@@ -75,7 +78,6 @@ public class Player {
     }
 
     protected LinkedList<OneCard> createStreamWith(LinkedList<OneCard> hand, LinkedList<OneCard> withCard) {
-        Collections.sort(hand, NumberAndSuit);
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
 
 
@@ -127,9 +129,57 @@ public class Player {
         return null;
     }
 
+    public List<OneCard> createBig2Stream(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
+        LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
+
+        if(withCard != null){
+
+        }else if(isContainClubsThree(hand)){
+
+            for(int i=0;i<hand.size();i++){
+                if(isClubsThree(hand.get(i))) {
+
+                    toReturn.add(hand.get(i));
+
+                    for (int kk = i + 1; kk < hand.size(); kk++) {
+                        if (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1) {
+                            if (toReturn.size() < 4 || (toReturn.size() == 4 && hand.get(i).getValue() == 15)) {
+                                toReturn.add(hand.get(kk));
+                            }
+                        }
+                    }
+
+                    if (toReturn.size() == 5) {
+                        return toReturn;
+                    }
+                }
+            }
+        }else {
+            for(int i=0;i<hand.size();i++){
+                if(hand.get(i).getValue() == 3) {
+
+                    toReturn.add(hand.get(i));
+
+                    for (int kk = i + 1; kk < hand.size(); kk++) {
+                        if (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1) {
+                            if (toReturn.size() < 4 || (toReturn.size() == 4 && hand.get(i).getValue() == 15)) {
+                                toReturn.add(hand.get(kk));
+                            }
+                        }
+                    }
+
+                    if (toReturn.size() == 5) {
+                        return toReturn;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
     //單張出牌
     public LinkedList<OneCard> createOneCard(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
-        Collections.sort(hand, NumberAndSuit);
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
 
 
@@ -148,26 +198,23 @@ public class Player {
                 toReturn.add(tmpCard.get(0));
                 return toReturn;
             }
-        }else if(isContainClubsThree(hand)){
-            for (OneCard oneCard : hand) {
-                if(isClubsThree(oneCard)){
-                    toReturn.add(oneCard);
-                    return toReturn;
-                }
-            }
         }else {
-            Random rand = new Random();
-            int n = rand.nextInt(hand.size());
+            if(isClubsThree(hand.get(0))){
+                toReturn.add(hand.get(0));
+                return toReturn;
+            }else{
+                Random rand = new Random();
+                int n = rand.nextInt(hand.size());
 
-            toReturn.add(hand.get(n));
-            return toReturn;
+                toReturn.add(hand.get(n));
+                return toReturn;
+            }
         }
 
         return null;
     }
 
     public LinkedList<OneCard> createPairs(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
-        Collections.sort(hand, NumberAndSuit);
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
         OneCard bigPair = null;
 
@@ -193,28 +240,6 @@ public class Player {
                     }
                 }
             }
-        }else if(isContainClubsThree(hand)){
-
-            Log.log("isContainClubsThree");
-            for(int i=0;i<hand.size();i++){
-                if(!isClubsThree(hand.get(i)) && hand.get(i).getValue()==3){
-
-                    Log.log("another 3:"+hand.get(i).getSuit().getRawName());
-
-                    toReturn.add(hand.get(i));
-                    for(int j=0;j<hand.size();j++){
-
-                        Log.log("round:"+j + " size:"+hand.size());
-                        if(isClubsThree(hand.get(j))){
-
-                            Log.log("get Clubs 3:"+j);
-
-                            toReturn.add(hand.get(j));
-                            return toReturn;
-                        }
-                    }
-                }
-            }
         }else {
             //withCard==null
             for(int i=0;i<hand.size();i++){
@@ -222,9 +247,22 @@ public class Player {
                 toReturn.add(hand.get(i));
 
                 for(int j=i+1;j<hand.size();j++){
-                    if(toReturn.get(0).getValue() == hand.get(j).getValue()){
-                        toReturn.add(hand.get(j));
-                        return toReturn;
+
+                    if(isClubsThree(toReturn.get(0))){
+                        if(hand.get(j).getValue() == 3){
+                            toReturn.add(hand.get(j));
+                            return toReturn;
+                        }
+
+                        if(j == hand.size()-1){
+                            //若有梅花三,但組合不到pairs,則跳出
+                            return null;
+                        }
+                    }else {
+                        if(toReturn.get(0).getValue() == hand.get(j).getValue()){
+                            toReturn.add(hand.get(j));
+                            return toReturn;
+                        }
                     }
                 }
             }
@@ -234,7 +272,6 @@ public class Player {
     }
 
     public LinkedList<OneCard> createFullHouse(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
-        Collections.sort(hand, NumberAndSuit);
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
         LinkedList<OneCard> tmpHand = (LinkedList)hand.clone();
 
@@ -327,7 +364,6 @@ public class Player {
     }
 
     public OneCard getPairsHead(LinkedList<OneCard> withCard){
-        Collections.sort(withCard, NumberAndSuit);
         if(withCard.size() == 2 && withCard.get(0).getValue() == withCard.get(1).getValue()){
             return withCard.get(0);
         }
@@ -344,17 +380,17 @@ public class Player {
             Log.log("check1:"+check1+" check2:"+check2+" check3:"+check3);
 
             if(check1 == check2 && check1==2*check3){
-                return withCard.get(0);
+                return withCard.get(4);
             }
         }
         return null;
     }
 
-    //1,10,11,12,13
+    //10,11,12,13,14 > 10,11,12,13,1
     public OneCard getRoyalStreamHead(LinkedList<OneCard> withCard){
         if(withCard.size() == 5){
-            int check1 = withCard.get(0).getValue();
-            int check2 = withCard.get(1).getValue() + withCard.get(2).getValue() + withCard.get(3).getValue()+withCard.get(4).getValue();
+            int check1 = withCard.get(4).getValue();
+            int check2 = withCard.get(0).getValue() + withCard.get(1).getValue() + withCard.get(2).getValue()+withCard.get(3).getValue();
             if(check1 == 14 && check2 == 46){
                 return withCard.get(0);
             }
@@ -362,12 +398,12 @@ public class Player {
         return null;
     }
 
-    //2,3,4,5,6
+    //3,4,5,6,15 > 3,4,5,6,2
     public OneCard getBig2StreamHead(LinkedList<OneCard> withCard){
         if(withCard.size() == 5){
-            int check1 = withCard.get(0).getValue();
-            int check2 = withCard.get(1).getValue() + withCard.get(2).getValue() + withCard.get(3).getValue()+withCard.get(4).getValue();
-            if(check1 == 15 && check2 == 21){
+            int check1 = withCard.get(4).getValue();
+            int check2 = withCard.get(0).getValue() + withCard.get(1).getValue() + withCard.get(2).getValue()+withCard.get(3).getValue();
+            if(check1 == 15 && check2 == 18){
                 return withCard.get(0);
             }
         }

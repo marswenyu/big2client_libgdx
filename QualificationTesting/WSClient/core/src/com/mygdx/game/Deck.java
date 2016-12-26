@@ -23,7 +23,7 @@ public class Deck {
             }
         }
 
-//        Collections.shuffle(tmpCardList);
+        Collections.shuffle(tmpCardList);
 
         int playCount = 0;
         for(OneCard card:tmpCardList){
