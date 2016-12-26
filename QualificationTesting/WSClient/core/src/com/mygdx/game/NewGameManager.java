@@ -159,22 +159,18 @@ public class NewGameManager {
             for(int i=0;i<players.length;i++){
                 if(players[i].getIsYourTurn()){
 
-                    Log.log(players[i].mPlayerNameEnum.getName()+" > caculateHowToPlay");
-
                     players[i].playerToReturn =
                             players[i].caculateHowToPlay(players[i].playerOneCards, mWithCard== null ? null:mWithCard);
 
 
                     if(players[i].playerToReturn == null){
-                        Log.log(players[i].mPlayerNameEnum.getName()+" > pass");
+//                        Log.log(players[i].mPlayerNameEnum.getName()+" > pass");
                         players[i].setPass();
                     }else {
                         boolean isRemove = players[i].playerOneCards.removeAll(players[i].playerToReturn);
 
-                        Log.printCard(players[i].playerToReturn);
-
                         mWithCard = players[i].playerToReturn;
-                        Log.log(players[i].mPlayerNameEnum.getName()+" > no pass");
+//                        Log.log(players[i].mPlayerNameEnum.getName()+" > no pass");
                     }
 
                     players[i].resetYourTurn();
@@ -188,9 +184,9 @@ public class NewGameManager {
                         }
                     }
 
-                    Log.log(players[i].mPlayerNameEnum.getName()+" > yourTurn:"+players[i].getIsYourTurn());
+//                    Log.log(players[i].mPlayerNameEnum.getName()+" > yourTurn:"+players[i].getIsYourTurn());
                     players[nextPlayer].setYourTurn();
-                    Log.log(players[nextPlayer].mPlayerNameEnum.getName()+" > yourTurn:"+players[nextPlayer].getIsYourTurn());
+//                    Log.log(players[nextPlayer].mPlayerNameEnum.getName()+" > yourTurn:"+players[nextPlayer].getIsYourTurn());
 
 
                     break;

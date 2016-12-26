@@ -35,18 +35,22 @@ public class OneCard {
         return value == 14 || value == 1;
     }
 
+    public boolean isBig2() {
+        return value == 15 || value == 2;
+    }
+
     public boolean isHigher(OneCard card) {
-        if (getBig2Value() > card.getBig2Value())
+        if (getValue() > card.getValue())
             return true;
-        else if (getBig2Value() == card.getBig2Value()) {
+        else if (isValueEqual(card)) {
             if (getSuit().isHigher(card.suit))
                 return true;
         }
         return false;
     }
 
-    public int getBig2Value() {
-        return value == 2 ? 100 : value;
+    public boolean isValueEqual(OneCard card){
+        return getValue() == card.getValue();
     }
 
     public Suit getSuit() {

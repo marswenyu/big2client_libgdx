@@ -110,7 +110,7 @@ public class PositionAndImg {
             float roation = 0;
 
             if(player.playerToReturn != null) {
-                Collections.sort(player.playerToReturn, SuitAndNumber);
+                Collections.sort(player.playerToReturn, Player.NumberAndSuit);
             }
 
             switch (player.mPlayerNameEnum) {

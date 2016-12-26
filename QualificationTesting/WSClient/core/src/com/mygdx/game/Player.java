@@ -58,30 +58,59 @@ public class Player {
             Collections.sort(withCard, NumberAndSuit);
 
             toReturn = createFlush(hand, withCard);
+            Log.printCard("[withCard]createFlush",toReturn);
 
             if(toReturn == null){
-                if(getStreamHead(withCard) != null){
+                toReturn = createFourKing(hand, withCard);
+                Log.printCard("[withCard]createFlush",toReturn);
+            }
+
+            if(toReturn == null){
+                if(getFullHouseHead(withCard) != null){
+                    toReturn = createFullHouse(hand, withCard);
+                    Log.printCard("[withCard]createFullHouse", toReturn);
+                }else if(getStreamHead(withCard) != null){
                     toReturn = createStreamWith(hand, withCard);
+                    Log.printCard("[withCard]createStreamWith", toReturn);
                 }else if(isPairs(withCard)){
                     toReturn = createPairs(hand, withCard);
+                    Log.printCard("[withCard]createPairs", toReturn);
                 }else {
                     toReturn = createOneCard(hand, withCard);
+                    Log.printCard("[withCard]createOneCard", toReturn);
                 }
             }
         }else {
             toReturn = createFlush(hand, null);
+            Log.printCard("[null]createFlush", toReturn);
+
+            if(toReturn == null){
+                toReturn = createFourKing(hand, null);
+                Log.printCard("[null]createFourKing", toReturn);
+            }
+
+            if(toReturn == null){
+                toReturn = createFullHouse(hand, null);
+                Log.printCard("[null]createFullHouse", toReturn);
+            }
 
             if(toReturn == null){
                 toReturn = createStreamWith(hand, null);
+                Log.printCard("[null]createStreamWith", toReturn);
             }
+
             if(toReturn == null) {
                 toReturn = createPairs(hand, null);
+                Log.printCard("[null]createPairs", toReturn);
             }
+
             if(toReturn == null) {
                 toReturn = createOneCard(hand, null);
+                Log.printCard("[null]createOneCard", toReturn);
             }
         }
 
+        Log.log("===============this round end============");
         return toReturn;
     }
 
@@ -91,6 +120,7 @@ public class Player {
 
         toReturn = createBig2Stream(hand, withCard);
         if(toReturn != null){
+            Log.printCard("[withCard]big2 or Ace", toReturn);
             return toReturn;
         }else if(withCard != null && (getBig2StreamHead(withCard) != null || getRoyalStreamHead(withCard)!=null) && toReturn==null){
             //若withCard為3,4,5,6,15或10,11,12,13,14 且沒有更大牌型,則退出
@@ -99,6 +129,7 @@ public class Player {
 
         toReturn = createMiniStream(hand, withCard);
         if(toReturn != null){
+            Log.printCard("[withCard]mini", toReturn);
             return toReturn;
         }
 
@@ -114,17 +145,22 @@ public class Player {
                 if(toReturn.size() < 4 && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)){
                     toReturn.add(hand.get(kk));
                 }else if(toReturn.size() == 4) {
-                    if (toBeat != null && hand.get(kk).getValue() > toBeat.getValue()) {
+                    if (toBeat != null && hand.get(kk).getValue() > toBeat.getValue()
+                            && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)) {
+
                         toReturn.add(hand.get(kk));
-                    } else if(toBeat != null && hand.get(kk).getValue() == toBeat.getValue() && hand.get(kk).isHigher(toBeat)){
+                    } else if(toBeat != null && hand.get(kk).getValue() == toBeat.getValue() && hand.get(kk).isHigher(toBeat)
+                            && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)){
+
                         toReturn.add(hand.get(kk));
-                    }else if(toBeat == null){
+                    }else if(toBeat == null && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)){
                         toReturn.add(hand.get(kk));
                     }
                 }
             }
 
             if (toReturn.size() == 5) {
+                Log.printCard("[withCard]normal", toReturn);
                 return toReturn;
             }
 
@@ -205,20 +241,16 @@ public class Player {
                 for (int kk = i + 1; kk < hand.size(); kk++) {
                     if(toReturn.size() < 2 && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)){
                         toReturn.add(hand.get(kk));
-                        Log.log("1name:"+hand.get(kk).getOneCardName());
                     }else if(toReturn.size() == 2 && toReturn.get(0).getValue() == 3 && hand.get(kk).getValue() == 5){
                         if(toBeat != null && hand.get(kk).isHigher(toBeat)){
                             toReturn.add(hand.get(kk));
                         }else if(toBeat == null){
                             toReturn.add(hand.get(kk));
                         }
-                        Log.log("2name:"+hand.get(kk).getOneCardName());
                     }else if(toReturn.size() == 3 && toReturn.get(0).getValue() == 3 && hand.get(kk).getValue() == 14) {
                         toReturn.add(hand.get(kk));
-                        Log.log("3name:"+hand.get(kk).getOneCardName());
                     }else if(toReturn.size() == 4 && toReturn.get(0).getValue() == 3 && hand.get(kk).getValue() == 15){
                         toReturn.add(hand.get(kk));
-                        Log.log("4name:"+hand.get(kk).getOneCardName());
                     }
                 }
 
@@ -330,91 +362,6 @@ public class Player {
         return null;
     }
 
-    public LinkedList<OneCard> createFullHouse(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
-        LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
-        LinkedList<OneCard> tmpHand = (LinkedList)hand.clone();
-
-        if(withCard != null){
-            OneCard bigPair = null;
-
-            int count=1;
-            if(withCard.size() == 5){
-                bigPair = withCard.get(0);
-                for (int i=1;i<withCard.size();i++){
-                    if(bigPair.getValue() == withCard.get(i).getValue()){
-                        count++;
-                    }else {
-                        bigPair = withCard.get(i);
-                        count = 1;
-                    }
-                    if(count == 3){
-                        break;
-                    }
-                }
-                if(count != 3){
-                    bigPair = null;
-                }
-            }
-
-            if(bigPair == null){
-                return null;
-            }
-
-            toReturn.clear();
-            for(int i=0;i<hand.size();i++){
-                if(hand.get(i).getValue()>bigPair.getValue()){
-
-                    toReturn.add(hand.get(i));
-                    for(int j=i+1;j<hand.size();j++){
-                        if(toReturn.get(0).getValue()==hand.get(j).getValue()){
-                            toReturn.add(hand.get(j));
-                        }
-                    }
-                }
-                if(toReturn.size()>=3){
-                    break;
-                }
-                toReturn.clear();
-            }
-
-            if(toReturn.size() >=3){
-                tmpHand.removeAll(toReturn);
-                if(toReturn.size() == 3){
-                    toReturn.addAll(createPairs(tmpHand, null));
-                    return toReturn;
-                }else if(toReturn.size() == 4){
-                    toReturn.addAll(createOneCard(tmpHand, null));
-                    return toReturn;
-                }
-            }
-        }else if(isContainClubsThree(hand)){
-
-        }else {
-            //withCard ==null
-            for(int i=0;i<hand.size();i++){
-                toReturn.clear();
-                toReturn.add(hand.get(i));
-                for(int j=i+1;j<hand.size();j++){
-                    if(toReturn.get(0).getValue()==hand.get(j).getValue()){
-                        toReturn.add(hand.get(j));
-                    }
-                }
-            }
-            if(toReturn.size()>=3){
-                tmpHand.removeAll(toReturn);
-                if(toReturn.size() == 3){
-                    toReturn.addAll(createPairs(tmpHand, null));
-                    return toReturn;
-                }else if(toReturn.size() == 4){
-                    toReturn.addAll(createOneCard(tmpHand, null));
-                    return toReturn;
-                }
-            }
-        }
-
-        return null;
-    }
-
     public boolean isPairs(LinkedList<OneCard> withCard){
         if(withCard.size() == 2){
             return withCard.get(0).getValue() == withCard.get(1).getValue();
@@ -491,7 +438,7 @@ public class Player {
     }
 
     public OneCard getFullHouseHead(List<OneCard> withCard){
-        if(withCard.size() == 5){
+        if(withCard != null && withCard.size() == 5){
             if(withCard.get(0).getValue() == withCard.get(2).getValue() &&
                     withCard.get(3).getValue() == withCard.get(4).getValue()){
                 return withCard.get(0);
@@ -503,13 +450,51 @@ public class Player {
         return null;
     }
 
-    public List<OneCard> createFullHouse(List<OneCard> hand, List<OneCard> withCard){
-        OneCard toBeat = getFullHouseHead(hand);
+    public LinkedList<OneCard> createFullHouse(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
+        OneCard toBeat = getFullHouseHead(withCard);
+        LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
+
         // TODO: 16/12/26
+
+        for(int i=0;i<hand.size();i++){
+            LinkedList<OneCard> tmpHand = (LinkedList)hand.clone();
+            toReturn.add(hand.get(i));
+
+            for(int j=i+1;j<hand.size();j++){
+                if(toReturn.get(0).isValueEqual(hand.get(j))){
+                    toReturn.add(hand.get(j));
+
+                    if(toReturn.size() == 3)
+                        break;
+                }
+            }
+
+            if(toReturn.size() == 3){
+                //找到三張一樣的,若此三張一樣的並不高於toBeat,則重新找
+                if(toBeat != null && !toReturn.get(0).isHigher(toBeat)){
+                    toReturn.clear();
+                    continue;
+                }
+
+
+                tmpHand.removeAll(toReturn);
+                LinkedList<OneCard> tmpToReturn = createPairs(tmpHand, null);
+                if(tmpToReturn != null){
+                    toReturn.addAll(tmpToReturn);
+                    if(getFullHouseHead(toReturn) != null){
+                        return toReturn;
+                    }
+                }
+            }
+
+            tmpHand.clear();
+            toReturn.clear();
+        }
+
         return null;
     }
 
-    public OneCard getFourKindHead(List<OneCard> withCard){
+    public OneCard getFourKindHead(LinkedList<OneCard> withCard){
         if(withCard.size() == 5){
             if(withCard.get(0).getValue() == withCard.get(3).getValue()){
                 return withCard.get(0);
@@ -520,9 +505,41 @@ public class Player {
         return null;
     }
 
-    public List<OneCard> createFourKing(List<OneCard> hand, List<OneCard> withCard){
+    public LinkedList<OneCard> createFourKing(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
         OneCard toBeat = getFourKindHead(hand);
+        LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
         // TODO: 16/12/26
+
+        for(int i=0;i<hand.size();i++){
+            toReturn.add(hand.get(i));
+
+            if(toBeat != null && !toReturn.get(0).isHigher(toBeat)){
+                //要找鐵支的目標若小於toBeat,則直接搜尋下一個目標
+                toReturn.clear();
+                continue;
+            }
+
+            for(int j=i+1;j<hand.size();j++){
+                if(toReturn.get(0).isValueEqual(hand.get(j))){
+                    toReturn.add(hand.get(j));
+                }
+            }
+
+            if(toReturn.size() == 4){
+                //找到鐵支
+                for(OneCard card:hand){
+                    if(!toReturn.get(0).isValueEqual(card)){
+                        toReturn.add(card);
+                    }
+                }
+
+                if(getFourKindHead(toReturn) != null) {
+                    return toReturn;
+                }
+            }
+
+            toReturn.clear();
+        }
 
         return null;
     }

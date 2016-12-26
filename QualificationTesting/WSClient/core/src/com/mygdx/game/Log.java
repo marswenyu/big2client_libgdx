@@ -11,9 +11,17 @@ public class Log {
         System.out.println(NewGameManager.TAG+content);
     }
 
-    public static void printCard(LinkedList<OneCard> cardList){
-        for(OneCard card:cardList){
-            log(card.getOneCardName());
+    public static void printCard(String content, LinkedList<OneCard> cardList){
+        StringBuilder sb = new StringBuilder();
+
+        if(cardList != null) {
+            for (OneCard card : cardList) {
+                sb.append(card.getValue() + ",");
+            }
+
+            sb.deleteCharAt(sb.length() - 1);
         }
+
+        log(content + " : " +sb.toString());
     }
 }
