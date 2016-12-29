@@ -1,11 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class Deck {
 

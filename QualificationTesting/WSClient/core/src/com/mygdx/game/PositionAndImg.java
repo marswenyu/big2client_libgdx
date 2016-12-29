@@ -1,12 +1,10 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by jay on 16/12/24.
@@ -78,11 +76,6 @@ public class PositionAndImg {
                 y+=delta_y;
             }
         }
-
-//        displayCardUI.addAll(createFirePosition(players[0]));
-//        displayCardUI.addAll(createFirePosition(players[1]));
-//        displayCardUI.addAll(createFirePosition(players[2]));
-//        displayCardUI.addAll(createFirePosition(players[3]));
         return displayCardUI;
     }
 

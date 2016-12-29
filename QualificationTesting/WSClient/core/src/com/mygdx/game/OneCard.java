@@ -12,6 +12,40 @@ public class OneCard {
     private String oneCardName;
     private Sprite image;
 
+    public enum Suit {
+
+        SPADES("spades",4),
+        HEARTS("heart",3),
+        DIAMONDS("diamonds",2),
+        CLUBS("clubs",1);
+
+        static final int EACH_MAX_NUM = 13;
+        String m_name;
+        int m_value;
+
+        Suit(String name, int value) {
+            this.m_name = name;
+            this.m_value = value;
+        }
+
+        public boolean isHigher(Suit suit) {
+            return m_value > suit.m_value;
+        }
+
+        public String getRawName(){
+            return m_name;
+        }
+
+        public int getRawValue() {
+            return m_value;
+        }
+
+        @Override
+        public String toString() {
+            return super.name().substring(0, 1);
+        }
+    }
+
     public OneCard(int value, Suit suit) {
         this.value = value;
         this.suit = suit;
@@ -74,37 +108,4 @@ public class OneCard {
         return oneCardName;
     }
 
-    public enum Suit {
-
-        SPADES("spades",4),
-        HEARTS("heart",3),
-        DIAMONDS("diamonds",2),
-        CLUBS("clubs",1);
-
-        static final int EACH_MAX_NUM = 13;
-        String m_name;
-        int m_value;
-
-        Suit(String name, int value) {
-            this.m_name = name;
-            this.m_value = value;
-        }
-
-        public boolean isHigher(Suit suit) {
-            return m_value > suit.m_value;
-        }
-
-        public String getRawName(){
-            return m_name;
-        }
-
-        public int getRawValue() {
-            return m_value;
-        }
-
-        @Override
-        public String toString() {
-            return super.name().substring(0, 1);
-        }
-    }
 }

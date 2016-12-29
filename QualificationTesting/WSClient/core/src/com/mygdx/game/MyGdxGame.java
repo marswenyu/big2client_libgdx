@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class MyGdxGame extends ApplicationAdapter {
 
 	SpriteBatch batch;
-//	GameManager gameManager = new GameManager();
 	NewGameManager gameManager = new NewGameManager();
 	
 	@Override
@@ -16,7 +15,6 @@ public class MyGdxGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 
 		gameManager.generate();
-//		gameManager.loadPokerAsset();
 	}
 
 	@Override
