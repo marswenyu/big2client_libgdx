@@ -14,7 +14,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	public void create () {
 		batch = new SpriteBatch();
 
-		gameManager.generate();
+		gameManager.readyToConnect();
 	}
 
 	@Override

@@ -1,13 +1,23 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_10;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 
 
-public class NewGameManager {
+public class NewGameManager{
     public static String TAG = "MyGdxGame_";
 
     private LinkedList<PositionAndImg.PositionDetail> drawCardList = new LinkedList<PositionAndImg.PositionDetail>();  //產生UI用的List
@@ -19,8 +29,9 @@ public class NewGameManager {
     Deck mDeck;
     private int mPlayTurn = -1;
     private boolean mReadyToPlay;
-
+    private WebSocketClient mWebSocketClient;
     public static Sprite passImage;
+    MyTextInputListener imputListener = new MyTextInputListener();
 
     private LinkedList<OneCard> mWithCard = null;  //玩家出的牌
 
@@ -31,7 +42,7 @@ public class NewGameManager {
             new Player(PlayerNameEnum.Joe)
     };
 
-    public void generate(){
+    private void initConfig(){
         GlobalPlayerTurn = -1;
         tmpCurrent = 0L;
         mIsGameFinish = false;
@@ -41,12 +52,28 @@ public class NewGameManager {
         mReadyToPlay = true;
 
         passImage= new Sprite(new Texture("poker/pic_poker.png"));
+    }
+
+    public class MyTextInputListener implements Input.TextInputListener {
+        @Override
+        public void input (String text) {
+            connectToServer();
+        }
+
+        @Override
+        public void canceled () {
+            readyToConnect();
+        }
+    }
+
+    public void readyToConnect(){
+
+        Gdx.input.getTextInput(imputListener, "Connect Game Server", "ws://192.168.0.180:8887", "Enter Address");
 
     }
 
     public void render(SpriteBatch batch){
         startGame();
-
         drawCardList.clear();
         drawCardList = new PositionAndImg().createPosition(players);
 
@@ -148,5 +175,39 @@ public class NewGameManager {
         }
 
         return false;
+    }
+
+    private void connectToServer(){
+        try {
+            mWebSocketClient = new WebSocketClient(new URI("ws://192.168.0.180:8887")) {
+                @Override
+                public void onMessage(String message) {
+                    Log.log("===============onMessage============");
+                }
+
+                @Override
+                public void onOpen(ServerHandshake handshake) {
+                    Log.log("===============onOpen============");
+                }
+
+                @Override
+                public void onClose(int code, String reason, boolean remote) {
+                    Log.log("===============onClose============");
+                }
+
+                @Override
+                public void onError(Exception ex) {
+                    Log.log("===============onError============");
+                    ex.printStackTrace();
+                    readyToConnect();
+                }
+
+            };
+
+            mWebSocketClient.connect();
+
+        } catch (URISyntaxException ex) {
+            Log.log("===============onError============");
+        }
     }
 }
