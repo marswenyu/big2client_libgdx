@@ -60,12 +60,12 @@ public class Player {
             toReturn = createFlush(hand, withCard);
             Log.printCard("[withCard]createFlush",toReturn);
 
-            if(toReturn == null){
+            if(toReturn == null && !isFlushStream(withCard)){
                 toReturn = createFourKing(hand, withCard);
                 Log.printCard("[withCard]createFlush",toReturn);
             }
 
-            if(toReturn == null){
+            if(toReturn == null && getFourKindHead(withCard)==null && !isFlushStream(withCard)){
                 if(getFullHouseHead(withCard) != null){
                     toReturn = createFullHouse(hand, withCard);
                     Log.printCard("[withCard]createFullHouse", toReturn);
@@ -144,7 +144,7 @@ public class Player {
             for (int kk = i + 1; kk < hand.size(); kk++) {
                 if(toReturn.size() < 4 && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)){
                     toReturn.add(hand.get(kk));
-                }else if(toReturn.size() == 4) {
+                }else if(toReturn.size() == 4 && hand.get(kk).getValue() != 15) {
                     if (toBeat != null && hand.get(kk).getValue() > toBeat.getValue()
                             && (toReturn.get(toReturn.size() - 1).getValue() == hand.get(kk).getValue() - 1)) {
 
@@ -371,7 +371,7 @@ public class Player {
 
     public OneCard getPairsHead(LinkedList<OneCard> withCard){
         if(withCard.size() == 2 && withCard.get(0).getValue() == withCard.get(1).getValue()){
-            return withCard.get(0);
+            return withCard.get(1);
         }
         return null;
     }
@@ -495,7 +495,7 @@ public class Player {
     }
 
     public OneCard getFourKindHead(LinkedList<OneCard> withCard){
-        if(withCard.size() == 5){
+        if(withCard !=null && withCard.size() == 5){
             if(withCard.get(0).getValue() == withCard.get(3).getValue()){
                 return withCard.get(0);
             }else if(withCard.get(1).getValue() == withCard.get(4).getValue()){
@@ -506,7 +506,7 @@ public class Player {
     }
 
     public LinkedList<OneCard> createFourKing(LinkedList<OneCard> hand, LinkedList<OneCard> withCard){
-        OneCard toBeat = getFourKindHead(hand);
+        OneCard toBeat = getFourKindHead(withCard);
         LinkedList<OneCard> toReturn = new LinkedList<OneCard>();
         // TODO: 16/12/26
 
@@ -530,6 +530,7 @@ public class Player {
                 for(OneCard card:hand){
                     if(!toReturn.get(0).isValueEqual(card)){
                         toReturn.add(card);
+                        break;
                     }
                 }
 
@@ -537,10 +538,8 @@ public class Player {
                     return toReturn;
                 }
             }
-
             toReturn.clear();
         }
-
         return null;
     }
 
@@ -579,11 +578,23 @@ public class Player {
         LinkedList<OneCard>[] splitCardByColor = getListSplitCardByColor(hand);
         LinkedList<OneCard> toReturn = null;
 
+        boolean isWithCardFlush = isFlushStream(withCard);
+
         for(LinkedList<OneCard> listOneCard:splitCardByColor){
-            toReturn = createStreamWith(listOneCard, withCard);
+            if(isWithCardFlush) {
+                toReturn = createStreamWith(listOneCard, withCard);
+            }else {
+                toReturn = createStreamWith(listOneCard, null);
+            }
 
             if(toReturn != null){
-                return toReturn;
+                if(isContainClubsThree(hand)){
+                    if(isClubsThree(toReturn.get(0))){
+                        return toReturn;
+                    }
+                }else {
+                    return toReturn;
+                }
             }
         }
 
@@ -591,7 +602,7 @@ public class Player {
     }
 
     public boolean isFlushStream(LinkedList<OneCard> withCard){
-        if(withCard.size() == 5){
+        if(withCard != null && withCard.size() == 5){
             for(int i=0;i<(withCard.size()-1);i++){
                 if(withCard.get(i).getSuit() != withCard.get(i+1).getSuit()){
                     return false;
