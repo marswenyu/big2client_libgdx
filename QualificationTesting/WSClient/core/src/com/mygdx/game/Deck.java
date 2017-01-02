@@ -2,13 +2,14 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class Deck {
 
     //發牌
     public Player[] deal(Player[] players){
 
-        ArrayList<OneCard> tmpCardList = new ArrayList<OneCard>();
+        LinkedList<OneCard> tmpCardList = new LinkedList<OneCard>();
 
         OneCard.Suit[] styles = OneCard.Suit.values();
         for(OneCard.Suit style: styles){

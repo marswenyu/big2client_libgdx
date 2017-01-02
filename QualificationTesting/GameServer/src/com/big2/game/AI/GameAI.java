@@ -21,12 +21,12 @@ public class GameAI {
             toReturn = createFlush(hand, withCard);
 //            Log.printCard("[withCard]createFlush",toReturn);
 
-            if(toReturn == null){
+            if(toReturn == null && !isFlushStream(withCard)){
                 toReturn = createFourKing(hand, withCard);
 //                Log.printCard("[withCard]createFlush",toReturn);
             }
 
-            if(toReturn == null){
+            if(toReturn == null && getFourKindHead(withCard)==null && !isFlushStream(withCard)){
                 if(getFullHouseHead(withCard) != null){
                     toReturn = createFullHouse(hand, withCard);
 //                    Log.printCard("[withCard]createFullHouse", toReturn);
@@ -78,12 +78,25 @@ public class GameAI {
     public static LinkedList<PlayerObjUnit> createFlush(LinkedList<PlayerObjUnit> hand, LinkedList<PlayerObjUnit> withCard){
         LinkedList<PlayerObjUnit>[] splitCardByColor = getListSplitCardByColor(hand);
         LinkedList<PlayerObjUnit> toReturn = null;
+        
+        boolean isWithCardFlush = isFlushStream(withCard);
 
         for(LinkedList<PlayerObjUnit> listOneCard:splitCardByColor){
-            toReturn = createStreamWith(listOneCard, withCard);
-
+        	
+        	if(isWithCardFlush) {
+        		toReturn = createStreamWith(listOneCard, withCard);
+        	}else{
+        		toReturn = createStreamWith(listOneCard, null);
+        	}
+        	
             if(toReturn != null){
-                return toReturn;
+            	if(isContainClubsThree(hand)){
+            		 if(isClubsThree(toReturn.get(0))){
+            		 	return toReturn;
+            		 }
+            	}else {
+            		return toReturn;
+            	}
             }
         }
 
@@ -307,7 +320,7 @@ public class GameAI {
             for (int kk = i + 1; kk < hand.size(); kk++) {
                 if(toReturn.size() < 4 && (toReturn.get(toReturn.size() - 1).cardNumber == hand.get(kk).cardNumber - 1)){
                     toReturn.add(hand.get(kk));
-                }else if(toReturn.size() == 4) {
+                }else if(toReturn.size() == 4 && hand.get(kk).cardNumber != 15) {
                     if (toBeat != null && hand.get(kk).cardNumber > toBeat.cardNumber
                             && (toReturn.get(toReturn.size() - 1).cardNumber == hand.get(kk).cardNumber - 1)) {
 
@@ -383,7 +396,7 @@ public class GameAI {
     }
 
     public static LinkedList<PlayerObjUnit> createFourKing(LinkedList<PlayerObjUnit> hand, LinkedList<PlayerObjUnit> withCard){
-    	PlayerObjUnit toBeat = getFourKindHead(hand);
+    	PlayerObjUnit toBeat = getFourKindHead(withCard);
         LinkedList<PlayerObjUnit> toReturn = new LinkedList<PlayerObjUnit>();
         // TODO: 16/12/26
 
@@ -407,6 +420,7 @@ public class GameAI {
                 for(PlayerObjUnit card:hand){
                     if(!toReturn.get(0).isValueEqual(card)){
                         toReturn.add(card);
+                        break;
                     }
                 }
 
@@ -434,7 +448,7 @@ public class GameAI {
     };
 
     public static PlayerObjUnit getFourKindHead(LinkedList<PlayerObjUnit> withCard){
-        if(withCard.size() == 5){
+        if(withCard !=null && withCard.size() == 5){
             if(withCard.get(0).cardNumber == withCard.get(3).cardNumber){
                 return withCard.get(0);
             }else if(withCard.get(1).cardNumber == withCard.get(4).cardNumber){
@@ -569,5 +583,28 @@ public class GameAI {
         }
 
         return toReturn;
+    }
+    
+    public static boolean isFlushStream(LinkedList<PlayerObjUnit> withCard){
+        if(withCard != null && withCard.size() == 5){
+            for(int i=0;i<(withCard.size()-1);i++){
+                if(withCard.get(i).cardSuit != withCard.get(i+1).cardSuit){
+                    return false;
+                }
+            }
+            return getStreamHead(withCard) != null;
+        }
+        return false;
+    }
+    
+    public static boolean isContainClubsThree(List<PlayerObjUnit> hand){
+
+        for(PlayerObjUnit card:hand){
+            if(GameAI.isClubsThree(card)){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
