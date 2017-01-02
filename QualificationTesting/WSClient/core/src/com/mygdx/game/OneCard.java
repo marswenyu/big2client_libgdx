@@ -87,6 +87,10 @@ public class OneCard {
         return getValue() == card.getValue();
     }
 
+    public boolean isValueEqual(int cardNumber, int cardSuit){
+        return getValue() == cardNumber && suit.getRawValue() == cardSuit;
+    }
+
     public Suit getSuit() {
         return suit;
     }

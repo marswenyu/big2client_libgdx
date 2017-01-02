@@ -103,7 +103,7 @@ public class PositionAndImg {
             float roation = 0;
 
             if(player.playerToReturn != null) {
-                Collections.sort(player.playerToReturn, Player.NumberAndSuit);
+                Collections.sort(player.playerToReturn, GameAI.NumberAndSuit);
             }
 
             switch (player.mPlayerNameEnum) {
@@ -133,7 +133,7 @@ public class PositionAndImg {
                     break;
             }
 
-            if(player.playerToReturn != null) {
+            if(player.playerToReturn != null && player.playerToReturn.size() > 0) {
                 for (int i = 0; i < player.playerToReturn.size(); i++) {
                     Sprite sprite = player.playerToReturn.get(i).getImage();
                     displayCardUI.add(new PositionDetail(x, y, 130, 200, roation, sprite));

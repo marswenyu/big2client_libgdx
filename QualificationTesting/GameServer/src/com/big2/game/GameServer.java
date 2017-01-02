@@ -6,10 +6,16 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.LinkedList;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+
+import com.big2.game.AI.GameAI;
+import com.big2.game.AI.PlayerObj;
+import com.big2.game.AI.PlayerObjUnit;
+import com.google.gson.Gson;
 
 public class GameServer extends WebSocketServer {
 
@@ -23,10 +29,7 @@ public class GameServer extends WebSocketServer {
 	
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-
-		sendToAll(conn.getRemoteSocketAddress().getAddress().getHostAddress()
-				+ " 进入房间 ！");
-
+		
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
 				+ " connected");
@@ -34,9 +37,6 @@ public class GameServer extends WebSocketServer {
 
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-
-		sendToAll(conn.getRemoteSocketAddress().getAddress().getHostAddress()
-				+ " 离开房间 ！");
 
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
@@ -46,13 +46,37 @@ public class GameServer extends WebSocketServer {
 	@Override
 	public void onMessage(WebSocket conn, String message) {
 
-		sendToAll("["
-				+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
-				+ "]" + message);
-
-		System.out.println("["
-				+ conn.getRemoteSocketAddress().getAddress().getHostAddress()
-				+ "]" + message);
+		System.out.println(conn.getRemoteSocketAddress().getAddress()
+				.getHostAddress()
+				+ " message:"+ message);
+		if(GameSwitch.GAME_SERVER_STATE.equals(message)){
+			sendToAll(GameSwitch.GAME_SERVER_READY);
+		}else{
+			Gson gson = new Gson();
+			PlayerObj player = gson.fromJson(message, PlayerObj.class);
+			
+			LinkedList<PlayerObjUnit> toBeat = player.getMyToBeatCard();
+			if(toBeat == null || toBeat.size() < 1){
+				toBeat = null;
+			}
+			
+			LinkedList<PlayerObjUnit> toReturn = 
+					GameAI.caculateHowToPlay(player.getMyHandCard(), toBeat);
+			
+			if(toReturn != null){
+				player.getMyHandCard().removeAll(toReturn);
+	
+			}
+			player.setMyReturnCard(toReturn);
+			
+			if(player.getMyHandCard().size() == 0){
+				player.setmGameState(GameSwitch.GAME_DONE);
+			}
+			
+			String gsonString = gson.toJson(player);
+			System.out.println("Return to client message:"+ gsonString);
+			sendToAll(gsonString);
+		}
 	}
 
 	@Override
@@ -86,8 +110,8 @@ public class GameServer extends WebSocketServer {
 				System.in));
 
 		while (true) {
-			String stringIn = webSocketIn.readLine();
-			server.sendToAll(stringIn);
+//			String stringIn = webSocketIn.readLine();
+//			server.sendToAll(stringIn);
 		}
 	}
 }
