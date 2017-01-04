@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -21,6 +22,7 @@ public class NewGameManager {
     private boolean mReadyToPlay;
 
     public static Sprite passImage;
+    public static Sprite mDesk;
 
     private LinkedList<OneCard> mWithCard = null;  //玩家出的牌
 
@@ -41,11 +43,15 @@ public class NewGameManager {
         mReadyToPlay = true;
 
         passImage= new Sprite(new Texture("poker/pic_poker.png"));
-
+        mDesk= new Sprite(new Texture("poker/desk.png"));
     }
 
     public void render(SpriteBatch batch){
         startGame();
+
+        if(mDesk != null){
+            batch.draw(mDesk,0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
 
         drawCardList.clear();
         drawCardList = new PositionAndImg().createPosition(players);
