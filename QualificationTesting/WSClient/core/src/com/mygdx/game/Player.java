@@ -323,8 +323,8 @@ public class Player {
                         (hand.get(i).getValue()==bigPair.getValue() && hand.get(i).getSuit().getRawValue()>bigPair.getSuit().getRawValue())){
 
                     toReturn.add(hand.get(i));
-                    for(int j=i+1;j<hand.size();j++){
-                        if(toReturn.get(0).getValue()==hand.get(j).getValue()){
+                    for(int j=0;j<hand.size();j++){
+                        if(toReturn.get(0).getValue()==hand.get(j).getValue() && (j != i)){
                             toReturn.add(hand.get(j));
                             return toReturn;
                         }
