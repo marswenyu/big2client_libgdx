@@ -30,6 +30,7 @@ public class NewGameManager{
     Deck mDeck;
     private WebSocketClient mWebSocketClient;
     public static Sprite passImage;
+    public static Sprite mDesk;
     MyTextInputListener imputListener = new MyTextInputListener();
     private boolean isFirstPlay;
 
@@ -48,6 +49,7 @@ public class NewGameManager{
         mIsGameFinish = false;
 
         passImage= new Sprite(new Texture("poker/pic_poker.png"));
+        mDesk= new Sprite(new Texture("poker/desk.png"));
     }
 
     public void dispose () {
@@ -128,6 +130,10 @@ public class NewGameManager{
 
     public void render(SpriteBatch batch){
 //        startGame();
+        if(mDesk != null){
+            batch.draw(mDesk,0,0,Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        }
+
         drawCardList.clear();
         drawCardList = new PositionAndImg().createPosition(players);
 
@@ -141,6 +147,7 @@ public class NewGameManager{
                     drawCardList.get(i).Width, drawCardList.get(i).Height,
                     1, 1,
                     drawCardList.get(i).Rotation);
+
         }
 
     }
