@@ -251,8 +251,8 @@ public class GameAI {
                         (hand.get(i).cardNumber==bigPair.cardNumber && hand.get(i).cardSuit>bigPair.cardSuit)){
 
                     toReturn.add(hand.get(i));
-                    for(int j=i+1;j<hand.size();j++){
-                        if(toReturn.get(0).cardNumber==hand.get(j).cardNumber){
+                    for(int j=0;j<hand.size();j++){
+                        if(toReturn.get(0).cardNumber==hand.get(j).cardNumber && (j != i)){
                             toReturn.add(hand.get(j));
                             return toReturn;
                         }
